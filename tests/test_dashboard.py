@@ -1,8 +1,12 @@
+from pathlib import Path
+
 from streamlit.testing.v1 import AppTest
+
+APP_PATH = Path(__file__).resolve().parents[1] / "dashboard" / "app.py"
 
 
 def test_all_dashboard_navigation_pages_render():
-    app = AppTest.from_file("dashboard/app.py", default_timeout=30).run()
+    app = AppTest.from_file(str(APP_PATH), default_timeout=30).run()
     assert not app.exception
     navigation = app.radio(key="workspace_navigation")
     pages = navigation.options

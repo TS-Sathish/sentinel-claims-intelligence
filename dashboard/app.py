@@ -89,7 +89,8 @@ if page == "Executive Overview":
                                  ("Positive labels", f"{y.mean():.1%}", f"Target: {target}"),
                                  ("Usable features", f"{X.shape[1]}", "After documented exclusions"),
                                  ("Model status", "Trained" if trained else "Not trained", "Local artifacts")]):
-            with col: kpi(*args)
+            with col:
+                kpi(*args)
         left, right = st.columns([1.1, 1])
         with left:
             st.markdown('<div class="section">Label distribution</div>', unsafe_allow_html=True)
@@ -147,7 +148,8 @@ elif page == "Claims Explorer":
         if filter_col != "None":
             values = ["All"] + sorted(view[filter_col].dropna().astype(str).unique().tolist())
             chosen = st.selectbox(f"{filter_col} value", values)
-            if chosen != "All": view = view.loc[view[filter_col].astype(str) == chosen]
+            if chosen != "All":
+                view = view.loc[view[filter_col].astype(str) == chosen]
         if q:
             mask = view.astype(str).apply(lambda col: col.str.contains(q, case=False, regex=False, na=False)).any(axis=1)
             view = view.loc[mask]
@@ -208,7 +210,8 @@ elif page == "Model Performance":
         m = metrics["xgboost" if model_choice == "XGBoost" else "baseline"]
         cards = st.columns(5)
         for col,key in zip(cards,["precision","recall","f1","pr_auc","roc_auc"]):
-            with col: kpi(key.replace("_", " "), f"{m[key]:.3f}", "Held-out split")
+            with col:
+                kpi(key.replace("_", " "), f"{m[key]:.3f}", "Held-out split")
         left,right = st.columns(2)
         with left:
             st.markdown('<div class="section">Precision–recall curve</div>', unsafe_allow_html=True)
@@ -245,7 +248,8 @@ elif page == "Data Quality":
     else:
         a,b,c,d = st.columns(4)
         for col,args in zip([a,b,c,d],[("Rows",f"{len(raw):,}","Source file"),("Columns",str(raw.shape[1]),"Including target"),("Missing cells",f"{raw.isna().sum().sum():,}","Source file"),("Duplicate rows",f"{raw.duplicated().sum():,}","Source file")]):
-            with col: kpi(*args)
+            with col:
+                kpi(*args)
         profile = pd.DataFrame({"Column":raw.columns.astype(str),"Type":raw.dtypes.astype(str).values,"Missing":raw.isna().sum().values,"Missing %":(raw.isna().mean().values*100).round(2),"Unique":raw.nunique(dropna=True).values})
         st.dataframe(profile.sort_values("Missing",ascending=False), use_container_width=True, hide_index=True)
         st.download_button("Export data quality report", profile.to_csv(index=False), "data_quality_report.csv", "text/csv")
